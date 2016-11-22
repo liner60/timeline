@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>时光轴效果jq</title>
+<script src="jquery-3.1.0.js"></script>
+<style>
+*{margin:0;padding:0;}
+.clearfix:after{content:"";display:block;width:0;clear:both;}
+.clearfix{zoom:1;}
+body{width:100%;background:url(2.jpg) center top no-repeat fixed;background-size:cover;-webkit-background-size:cover;-o-background-size:cover;}
+.wrapper{width:900px;min-height:1000px;margin:200px auto 0;position:relative;padding-bottom:20px;}
+.line{width:2px;height:100%;background:#5d7895;position:absolute;top:30px;left:100px;}
+.user_picBox{border-radius:50%;overflow:hidden;width:70px;height:70px;position:absolute;top:30px;left:15px;border:1px solid #fff;}
+.user_pic{width:100%;}
+.mesBord{width:495px;min-height:200px;border:1px solid #189948;border-radius:10px;background:#fff;margin-left:145px;position:relative;}
+.mesBord_tit{background:#3bbfb4;font-size:14px;height:30px;line-height:30px;text-indent:2em;border-radius:10px 10px 0 0;}
+.mesBord_main{padding:10px 30px;}
+.mesBord_input{margin:0 auto 50px;min-height:105px;width:100%;overflow-y:visible;border:1px solid #ccc;color:#666;}
+.mes_subBtn{color:#fff;background:#3bbfb4;height:30px;line-height:30px;width:80px;border:0;position:absolute;right:15px;bottom:10px;border-radius:8px;}
+.mesBox{width:795px;padding-left:10px;margin:60px 0 0 95px;}
+.mesBox_main{width:100%;position:relative;margin-bottom:30px;}
+.mes_cicle{position:absolute;left:-10px;top:30px;width:7px;height:7px;background:#3bbfb4;border:2px solid #fff;border-radius:50%;}
+.mes_info{background:#fff;width:300px;padding:0 40px 10px;border-radius:10px;min-height:40px;position:relative;}
+.mes_date{color:#999;font-weight:bold;font-size:18px;}
+.mes_hour{color:#a1d2e9;font-size:12px;padding-left:5px;}
+.mes_more{width:25px;height:50px;position:absolute;right:-25px;top:10px;display:none;}
+.mes_edit{width:100%;background:url(edit.png) center no-repeat;height:25px;}
+.mes_delet{width:100%;background:url(delete.png) center no-repeat;height:24px;}
+.mes_cInput{width:100%;border:0;background:#fff;margin-bottom:40px;}
+.cInput_active{border:1px solid #ccc;overflow-y:visible;min-height:80px;margin-bottom:0;}
+.saveBtn{display:none;color:#fff;background:#3bbfb4;height:30px;line-height:30px;width:80px;border:0;border-radius:8px;margin-top:10px;float:right;}
+.show{display:block;}
+</style>
+</head>
+<body>
+<div class="wrapper">
+    <div class="line"></div>
+    <div class="user_picBox"><img src="100.png" class="user_pic"></div>
+    <div class="mesBord">
+         <h1 class="mesBord_tit">随便说点什么吧...</h1>
+         <div class="mesBord_main">
+            <div class="mesBord_input" contenteditable="true"></div>
+            <input type="submit" value="发布" class="mes_subBtn">
+         </div>
+    </div>
+    <div class="mesBox">
+         <!--<div class="mesBox_main">
+             <div class="mes_cicle">
+             </div>
+             <div class="mes_info">
+                 <div class="mes_more">
+                     <div class="mes_edit"></div>
+                     <div class="mes_delet"></div>
+                 </div>
+                 <div class="mes_time">
+                    <span class="mes_date">2016-8-24</span>
+                    <span class="mes_hour">14:13</span>
+                 </div>
+                 <div class="mes_cont clearfix">
+                     <textarea class="mes_cInput" disabled="disabled"></textarea>
+                     <input type="submit" value="保存" class="saveBtn">
+                 </div>
+             </div>
+         </div>-->    
+    </div>
+</div>
+<script>
+$(document).ready(function(){
+	var cont2=$(".mesBord_input").html();
+	$(".mes_subBtn").click(function(){
+		var cont=$(".mesBord_input").html();
+		var date=new Date();
+		var y=buling(date.getFullYear());
+		var month=buling(date.getMonth()+1);
+		var d=buling(date.getDate());
+		var h=buling(date.getHours());
+		var m=buling(date.getMinutes());
+		if(cont!=cont2){
+		$(".mesBox").append('<div class="mesBox_main"><div class="mes_cicle"></div><div class="mes_info"><div class="mes_more"><div class="mes_edit"></div> <div class="mes_delet"></div></div><div class="mes_time"><span class="mes_date">'+y+'-'+month+'-'+d+'</span><span class="mes_hour">'+h+':'+m+'</span></div><div class="mes_cont clearfix"><div class="mes_cInput">'+cont+'</div><input type="submit" value="保存" class="saveBtn"></div></div></div>');
+		}
+		$(".mes_info").mouseover(function(){
+			$(this).children(".mes_more").addClass("show");
+		});
+		$(".mes_info").mouseout(function(){
+			$(this).children(".mes_more").removeClass("show");
+		});
+		$(".mes_delet").click(function(){
+			$(this).parents(".mesBox_main").children().remove();
+		})
+		$(".mes_edit").click(function(){
+			var mesInfo=$(this).parents(".mes_info");
+			mesInfo.find(".mes_cInput").addClass("cInput_active").attr("contenteditable","true");
+			mesInfo.find(".saveBtn").addClass("show").click(function(){
+				if($(this).prev().html()==""){
+					$(this).parents(".mes_info").find(".mes_delet").trigger("click");
+				}else{
+				  $(this).prev().removeClass("cInput_active").removeAttr("contenteditable");
+				  $(this).removeClass("show");
+				}
+			});
+		})
+		cont2=$(".mesBord_input").html();
+	});
+	function buling(m){
+			m=m*1;
+			if(m<10){
+				m="0"+m;
+			}
+			return m;
+	}
+})
+</script>
+</body>
+</html>
